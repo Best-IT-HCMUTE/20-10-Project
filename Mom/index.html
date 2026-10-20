@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#251d1c">
+  <title>Một tấm thiệp dành cho mẹ — 20 tháng 10</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #251d1c;
+      --paper: #fff4e8;
+      --muted: #c2aaa0;
+      --rose: #e2a092;
+      --rose-deep: #c77d72;
+      --gold: #f4cb83;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      color: var(--paper);
+      background:
+        radial-gradient(ellipse at 50% 105%, rgba(173, 103, 83, .2), transparent 48%),
+        var(--night);
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .screen.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+    .screen-inner { width: min(760px, 100%); margin: auto; text-align: center; }
+
+    .eyebrow {
+      margin: 0 0 17px;
+      color: var(--rose);
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1, h2 { font-family: "Segoe UI", Arial, sans-serif; font-weight: 400; }
+
+    h1 {
+      margin-bottom: 15px;
+      font-size: clamp(2.7rem, 8vw, 5.8rem);
+      letter-spacing: -.055em;
+      line-height: 1.04;
+    }
+
+    h1 em { color: var(--rose); font-weight: 400; }
+
+    .subtitle {
+      max-width: 450px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.8;
+    }
+
+    .primary-button, .secondary-button {
+      min-height: 49px;
+      padding: 0 23px;
+      border: 1px solid var(--rose);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .primary-button { color: #2b1e1b; background: var(--rose); }
+    .primary-button:hover { background: #f0b8a7; transform: translateY(-2px); }
+    .secondary-button { color: var(--paper); background: transparent; }
+    .secondary-button:hover { color: var(--rose); transform: translateY(-2px); }
+    button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+
+    .cover-inner { max-width: 610px; }
+
+    .cover-card {
+      position: relative;
+      width: min(310px, 76vw);
+      height: 215px;
+      margin: 0 auto 37px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 244, 232, .25);
+      border-radius: 5px;
+      background: linear-gradient(145deg, #9b6157, #6d4540 62%, #4f3532);
+      box-shadow: 0 28px 85px rgba(0, 0, 0, .33);
+      transform: rotate(3deg);
+    }
+
+    .cover-card::before {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, transparent 49.7%, rgba(46, 22, 19, .16) 50%);
+      content: "";
+    }
+
+    .cover-card::after {
+      position: absolute;
+      top: -75px;
+      left: 50%;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(255, 244, 232, .2);
+      border-radius: 50%;
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .cover-seal {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 64px;
+      height: 64px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .44);
+      border-radius: 50%;
+      color: #fff1d7;
+      background: #d48976;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 1.5rem;
+      transform: translate(-50%, -20%);
+    }
+
+    .cover-date {
+      position: absolute;
+      z-index: 1;
+      top: 27px;
+      right: 0;
+      left: 0;
+      color: #fff1de;
+      font-size: .67rem;
+      letter-spacing: .23em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cover-inner .primary-button { margin-top: 29px; }
+    .small-note { margin: 15px 0 0; color: #bb9c91; font-size: .78rem; }
+
+    .candle-inner { width: min(500px, 100%); }
+
+    .candle-scene {
+      position: relative;
+      display: grid;
+      width: min(440px, 100%);
+      height: 310px;
+      margin: 18px auto 15px;
+      place-items: end center;
+    }
+
+    .candle-glow {
+      position: absolute;
+      bottom: 54px;
+      width: 225px;
+      height: 225px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244, 203, 131, .2), rgba(244, 203, 131, 0) 70%);
+      opacity: .7;
+      transition: opacity .5s ease;
+    }
+
+    .candle {
+      position: absolute;
+      bottom: 22px;
+      width: 58px;
+      height: 152px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 8px 8px 5px 5px;
+      background:
+        linear-gradient(90deg, rgba(130, 97, 69, .26), transparent 22%, rgba(255, 255, 255, .2) 50%, transparent 74%),
+        linear-gradient(#fff0d6, #d9ad8b);
+      box-shadow: 0 17px 36px rgba(0, 0, 0, .2);
+    }
+
+    .candle::after {
+      position: absolute;
+      top: 0;
+      right: 7px;
+      left: 7px;
+      height: 10px;
+      border-radius: 50%;
+      background: #fff6e9;
+      content: "";
+    }
+
+    .wick {
+      position: absolute;
+      z-index: 1;
+      bottom: 172px;
+      left: calc(50% - 1px);
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: #47372e;
+    }
+
+    .flame {
+      position: absolute;
+      z-index: 2;
+      bottom: 184px;
+      left: 50%;
+      width: 25px;
+      height: 43px;
+      border-radius: 55% 45% 55% 45%;
+      background: radial-gradient(ellipse at 50% 72%, #fff5bf 0 17%, #ffd46e 35%, #f39251 69%, rgba(229, 119, 77, 0) 74%);
+      filter: drop-shadow(0 0 14px rgba(246, 169, 82, .9));
+      transform: translateX(-50%);
+      transform-origin: 50% 90%;
+      animation: flicker .72s ease-in-out infinite alternate;
+      transition: opacity .25s ease, transform .35s ease;
+    }
+
+    .flame::after {
+      position: absolute;
+      top: 13px;
+      left: 9px;
+      width: 8px;
+      height: 21px;
+      border-radius: 50%;
+      background: #fff9da;
+      content: "";
+    }
+
+    .flame.out { opacity: 0; transform: translate(-50%, 9px) scale(.3); animation: none; }
+
+    .smoke {
+      position: absolute;
+      z-index: 3;
+      bottom: 211px;
+      left: calc(50% - 5px);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 244, 232, .48);
+      filter: blur(3px);
+      opacity: 0;
+      transform: scale(.2);
+    }
+
+    .smoke.rise { animation: smoke-rise 1.2s ease-out forwards; }
+
+    .countdown {
+      position: absolute;
+      top: 50%;
+      left: calc(50% + clamp(85px, 20vw, 120px));
+      color: var(--gold);
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: clamp(4rem, 12vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0;
+      text-shadow: 0 0 32px rgba(244, 203, 131, .35);
+      transform: translate(-50%, -50%) scale(.7);
+    }
+
+    .countdown.show { animation: count-pop .78s ease both; }
+    .candle-copy { min-height: 53px; }
+    .candle-copy h2 { margin: 0 0 7px; font-size: 1.65rem; }
+    .candle-copy p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    .wish-timer {
+      width: min(330px, 90%);
+      margin: 20px auto 0;
+      padding: 14px 18px 16px;
+      border: 1px solid rgba(244, 203, 131, .3);
+      border-radius: 16px;
+      background: rgba(244, 203, 131, .07);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+    }
+
+    .wish-timer-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      color: #c2aaa0;
+      font-size: .82rem;
+    }
+
+    .wish-timer-label strong { color: var(--gold); font-size: 1.12rem; font-variant-numeric: tabular-nums; }
+    .wish-progress { height: 6px; overflow: hidden; border-radius: 6px; background: rgba(255, 244, 232, .14); }
+
+    .wish-progress span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--rose-deep), var(--gold));
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .candle-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .candle-actions button { min-height: 44px; padding: 0 18px; font-size: .88rem; }
+    .candle-actions[hidden] { display: none; }
+    .mic-status { min-height: 20px; margin: 13px 0 0; color: #d1bcb3; font-size: .78rem; }
+
+    #screen-code {
+      padding: clamp(14px, 3vw, 30px);
+      background:
+        radial-gradient(ellipse at 50% 0, rgba(173, 103, 83, .15), transparent 50%),
+        #171211;
+    }
+
+    .code-inner {
+      display: flex;
+      width: min(1200px, 100%);
+      height: calc(100dvh - clamp(28px, 6vw, 60px));
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .code-intro { flex: 0 0 auto; margin-bottom: 16px; text-align: center; }
+    .code-intro .eyebrow { margin-bottom: 8px; }
+    .code-intro h2 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.65rem); }
+
+    .editor {
+      display: flex;
+      min-height: 280px;
+      flex: 1 1 auto;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #4c3934;
+      border-radius: 11px;
+      background: #1a1513;
+      box-shadow: 0 25px 75px rgba(0, 0, 0, .34);
+      text-align: left;
+    }
+
+    .editor-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 42px;
+      flex: 0 0 auto;
+      padding: 0 14px;
+      border-bottom: 1px solid #392b27;
+      color: #b19b91;
+      font-size: .72rem;
+    }
+
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #df816e; }
+    .dot:nth-child(2) { background: #e7bb6d; }
+    .dot:nth-child(3) { background: #8bb58e; }
+    .filename { margin-left: 7px; }
+
+    .editor-body {
+      min-height: 0;
+      flex: 1 1 auto;
+      padding: 19px 16px;
+      overflow: auto;
+      color: #e0d0c6;
+      font: .82rem/1.85 Consolas, "Courier New", monospace;
+      scrollbar-color: #71514a #1a1513;
+      text-align: left;
+    }
+
+    .code-line {
+      min-height: 1.85em;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      animation: line-enter .2s ease both;
+    }
+
+    .line-number { display: inline-block; width: 30px; color: #88756d; user-select: none; }
+    .code-keyword { color: #d4a1d8; }
+    .code-string { color: #e8bd83; }
+    .code-function { color: #e5a08a; }
+    .code-comment { color: #a38e84; }
+
+    .code-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 1em;
+      margin-left: 3px;
+      background: var(--rose);
+      vertical-align: -.12em;
+      animation: blink .85s steps(2, start) infinite;
+    }
+
+    .run-status {
+      display: flex;
+      min-height: 39px;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      border-top: 1px solid #392b27;
+      color: #b19b91;
+      font-size: .72rem;
+    }
+
+    .run-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #a3ca9f;
+      box-shadow: 0 0 10px rgba(163, 202, 159, .6);
+    }
+
+    .wish-card {
+      width: min(680px, 100%);
+      margin: auto;
+      padding: clamp(22px, 5vw, 34px);
+      border: 1px solid rgba(231, 184, 164, .22);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(120, 70, 59, .42), rgba(51, 37, 34, .68));
+      text-align: center;
+    }
+
+    .wish-card .eyebrow { margin-bottom: 10px; }
+    .wish-card h2 { margin-bottom: 12px; color: #fff0df; font-size: clamp(1.7rem, 5vw, 2.55rem); }
+    .wish-card p { max-width: 590px; margin: 0 auto; color: #eadbd1; font-family: "Segoe UI", Arial, sans-serif; font-size: 1rem; line-height: 1.8; }
+    .wish-signoff { margin-top: 16px !important; color: #efb6a4 !important; font-family: "Segoe UI", sans-serif !important; font-size: .86rem !important; }
+
+    @keyframes flicker {
+      from { transform: translateX(-50%) rotate(-3deg) scale(.97, 1); }
+      to { transform: translateX(-50%) rotate(3deg) scale(1.04, .96); }
+    }
+
+    @keyframes count-pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.65); }
+      25%, 70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    @keyframes smoke-rise {
+      0% { opacity: .55; transform: translate(0, 0) scale(.4); }
+      100% { opacity: 0; transform: translate(18px, -56px) scale(2.3); }
+    }
+
+    @keyframes blink { to { visibility: hidden; } }
+    @keyframes line-enter {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .screen { padding: max(16px, env(safe-area-inset-top)) 18px max(16px, env(safe-area-inset-bottom)); }
+      .candle-scene { height: 255px; margin-top: 0; }
+      .countdown {
+        top: 22%;
+        left: 50%;
+        font-size: clamp(5rem, 24vw, 7rem);
+      }
+      .wish-timer { margin-top: 14px; }
+      .candle-copy h2 { font-size: 1.4rem; }
+      .candle-copy p { font-size: .85rem; }
+      .candle-actions { gap: 8px; margin-top: 13px; }
+      .candle-actions button { min-height: 48px; padding: 0 14px; }
+      .code-inner { height: calc(100dvh - 32px); margin: 0 auto; }
+      .editor { min-height: 0; }
+      .editor-body { padding: 14px 11px; font-size: .73rem; }
+      .line-number { width: 24px; }
+      .code-intro { margin-bottom: 15px; }
+      .wish-card { padding: 26px 20px; }
+      .wish-card p { font-size: .96rem; line-height: 1.7; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="background-music" src="Nhac_nen.mp3" preload="auto" loop></audio>
+  <audio id="candle-sound" src="Hieu_nen_chay.mp3" preload="auto" loop></audio>
+
+  <section class="screen active" id="screen-cover" aria-labelledby="cover-title">
+    <div class="screen-inner cover-inner">
+      <div class="cover-card" aria-hidden="true">
+        <span class="cover-date">Một lời thương gửi về nhà · 20.10</span>
+        <span class="cover-seal">♡</span>
+      </div>
+      <p class="eyebrow">Từ 3 đứa con</p>
+      <h1 id="cover-title">Có một tấm thiệp<br><em>dành cho mẹ.</em></h1>
+      <p class="subtitle">Mẹ dành cho con một chút thời gian nhé?</p>
+      <button class="primary-button" id="open-card" type="button">Mở thiệp <span aria-hidden="true">↗</span></button>
+      <p class="small-note">Tụi con có một điều nhỏ muốn gửi đến mẹ.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-candle" aria-labelledby="candle-title" aria-hidden="true">
+    <div class="screen-inner candle-inner">
+      <p class="eyebrow">Một điều ước dành cho mẹ</p>
+      <div class="candle-scene" aria-hidden="true">
+        <div class="candle-glow" id="candle-glow"></div>
+        <div class="candle"></div>
+        <div class="wick"></div>
+        <div class="flame" id="flame"></div>
+        <div class="smoke" id="smoke"></div>
+        <div class="countdown" id="countdown"></div>
+      </div>
+      <div class="candle-copy" aria-live="polite">
+        <h2 id="candle-title">Mẹ hãy ước một điều thật đẹp nhé</h2>
+        <p id="candle-instruction">Nhắm mắt và dành một chút bình yên cho điều ước của mẹ.</p>
+      </div>
+      <div class="wish-timer" id="wish-timer" aria-label="Thời gian ước nguyện còn lại">
+        <div class="wish-timer-label"><span>Thời gian ước nguyện</span><strong><span id="wish-seconds">15</span> giây</strong></div>
+        <div class="wish-progress" aria-hidden="true"><span id="wish-progress"></span></div>
+      </div>
+      <div class="candle-actions" id="candle-actions" hidden>
+        <button class="primary-button" id="mic-button" type="button">Bật mic để thổi</button>
+        <button class="secondary-button" id="blow-button" type="button">Chạm để thổi nến</button>
+      </div>
+      <p class="mic-status" id="mic-status" role="status"></p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-code" aria-labelledby="code-title" aria-hidden="true">
+    <div class="screen-inner code-inner">
+      <div class="code-intro">
+        <p class="eyebrow">Đang viết một lời cảm ơn</p>
+        <h2 id="code-title">Gói ghém yêu thương gửi mẹ...</h2>
+      </div>
+      <div class="editor" aria-label="Màn hình mã đang được viết">
+        <div class="editor-bar" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="filename">loi-thuong-gui-me.js</span>
+        </div>
+        <div class="editor-body" id="editor-body" aria-live="off"></div>
+        <div class="run-status" id="run-status"><span class="run-dot"></span><span>Đang khởi động...</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-wish" aria-label="Lời chúc dành cho mẹ" aria-hidden="true">
+    <div class="screen-inner">
+      <div class="wish-card" aria-live="polite">
+        <p class="eyebrow">Chúc mừng ngày Phụ nữ Việt Nam</p>
+        <h2>Lời chúc gửi đến mẹ ♡</h2>
+        <p>
+          Nhân ngày Phụ nữ Việt Nam 20/10, tụi con chúc mẹ luôn mạnh khỏe, bình an, vui vẻ và lúc nào cũng nở nụ cười trên môi. Mong rằng những điều tốt đẹp nhất sẽ luôn đến với mẹ, những muộn phiền sẽ vơi đi, còn niềm vui và hạnh phúc sẽ ở lại thật lâu bên mẹ.
+        </p>
+        <p class="wish-signoff">Chúc mẹ 20 tháng 10 thật vui. ✿</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const coverScreen = document.querySelector("#screen-cover");
+    const candleScreen = document.querySelector("#screen-candle");
+    const codeScreen = document.querySelector("#screen-code");
+    const wishScreen = document.querySelector("#screen-wish");
+    const openCardButton = document.querySelector("#open-card");
+    const countdown = document.querySelector("#countdown");
+    const candleTitle = document.querySelector("#candle-title");
+    const candleInstruction = document.querySelector("#candle-instruction");
+    const candleActions = document.querySelector("#candle-actions");
+    const wishTimer = document.querySelector("#wish-timer");
+    const wishSeconds = document.querySelector("#wish-seconds");
+    const wishProgress = document.querySelector("#wish-progress");
+    const flame = document.querySelector("#flame");
+    const smoke = document.querySelector("#smoke");
+    const candleGlow = document.querySelector("#candle-glow");
+    const micButton = document.querySelector("#mic-button");
+    const blowButton = document.querySelector("#blow-button");
+    const micStatus = document.querySelector("#mic-status");
+    const editorBody = document.querySelector("#editor-body");
+    const runStatus = document.querySelector("#run-status");
+    const backgroundMusic = document.querySelector("#background-music");
+    const candleSound = document.querySelector("#candle-sound");
+
+    let candleIsOut = false;
+    let audioStream;
+    let audioContext;
+    let animationFrame;
+
+    function showScreen(screen) {
+      for (const candidate of [coverScreen, candleScreen, codeScreen, wishScreen]) {
+        const isActive = candidate === screen;
+        candidate.classList.toggle("active", isActive);
+        candidate.setAttribute("aria-hidden", String(!isActive));
+      }
+    }
+
+    function wait(milliseconds) {
+      return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+    }
+
+    function playAudio(audio, description) {
+      audio.play().catch((error) => {
+        if (!candleIsOut) {
+          micStatus.textContent = `Không phát được ${description} (${error.name || "lỗi không xác định"}).`;
+        }
+      });
+    }
+
+    function stopCandleSound() {
+      candleSound.pause();
+      candleSound.currentTime = 0;
+    }
+
+    async function startCandle() {
+      showScreen(candleScreen);
+      backgroundMusic.volume = 0.35;
+      candleSound.volume = 0.55;
+      playAudio(backgroundMusic, "nhạc nền");
+      playAudio(candleSound, "tiếng nến cháy");
+      candleTitle.textContent = "Ước một điều thật đẹp nhé";
+      candleInstruction.textContent = "Nhắm mắt và dành một chút bình yên cho điều ước của mẹ.";
+      wishTimer.hidden = false;
+      candleActions.hidden = true;
+
+      for (let remaining = 15; remaining > 0; remaining -= 1) {
+        wishSeconds.textContent = String(remaining);
+        wishProgress.style.transform = `scaleX(${remaining / 15})`;
+        await wait(1000);
+      }
+
+      wishTimer.hidden = true;
+      candleTitle.textContent = "Sẵn sàng thổi nến chưa?";
+      candleInstruction.textContent = "Đếm ngược bắt đầu nhé...";
+      for (const number of ["3", "2", "1"]) {
+        countdown.textContent = number;
+        countdown.classList.remove("show");
+        void countdown.offsetWidth;
+        countdown.classList.add("show");
+        await wait(850);
+      }
+
+      candleTitle.textContent = "Đến lượt mẹ rồi!";
+      candleInstruction.textContent = "Mẹ thổi vào mic hoặc chạm nút để tắt nến nhé.";
+      candleActions.hidden = false;
+      blowButton.focus();
+    }
+
+    function stopMicrophone() {
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = undefined;
+      }
+      if (audioContext && audioContext.state !== "closed") void audioContext.close();
+      audioContext = undefined;
+      if (audioStream) {
+        for (const track of audioStream.getTracks()) track.stop();
+      }
+      audioStream = undefined;
+    }
+
+    function extinguishCandle() {
+      if (candleIsOut || candleActions.hidden) return;
+      candleIsOut = true;
+      stopMicrophone();
+      stopCandleSound();
+      flame.classList.add("out");
+      smoke.classList.remove("rise");
+      void smoke.offsetWidth;
+      smoke.classList.add("rise");
+      candleGlow.style.opacity = "0";
+      candleTitle.textContent = "Điều ước của mẹ đã bay lên rồi!";
+      candleInstruction.textContent = "Con đang gói ghém một lời thương...";
+      candleActions.hidden = true;
+      micStatus.textContent = "";
+      window.setTimeout(() => {
+        showScreen(codeScreen);
+        void playCodeAnimation();
+      }, 1050);
+    }
+
+    async function enableMicrophone() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        micStatus.textContent = "Trình duyệt này không hỗ trợ mic ở trang hiện tại. Mẹ có thể chạm nút bên cạnh để thổi nến.";
+        return;
+      }
+
+      micButton.disabled = true;
+      micStatus.textContent = "Đang chờ mẹ cho phép dùng mic...";
+
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (candleIsOut) {
+          stopMicrophone();
+          return;
+        }
+
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) {
+          stopMicrophone();
+          micStatus.textContent = "Không thể phân tích âm thanh trên trình duyệt này. Mẹ hãy chạm nút để thổi nến nhé.";
+          return;
+        }
+
+        audioContext = new AudioContextConstructor();
+        await audioContext.resume();
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 1024;
+        audioContext.createMediaStreamSource(audioStream).connect(analyser);
+        const samples = new Uint8Array(analyser.fftSize);
+        let loudFrames = 0;
+        micStatus.textContent = "Mic đã bật — mẹ thổi nhẹ vào mic để tắt nến nhé.";
+
+        const listenForBlow = () => {
+          if (candleIsOut || !audioContext || audioContext.state === "closed") return;
+          analyser.getByteTimeDomainData(samples);
+          let sum = 0;
+          for (const sample of samples) {
+            const amplitude = (sample - 128) / 128;
+            sum += amplitude * amplitude;
+          }
+          const volume = Math.sqrt(sum / samples.length);
+          loudFrames = volume > 0.085 ? loudFrames + 1 : Math.max(0, loudFrames - 1);
+
+          if (loudFrames >= 7) {
+            extinguishCandle();
+            return;
+          }
+          animationFrame = window.requestAnimationFrame(listenForBlow);
+        };
+
+        animationFrame = window.requestAnimationFrame(listenForBlow);
+      } catch (error) {
+        stopMicrophone();
+        micButton.disabled = false;
+        if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+          micStatus.textContent = "Mic chưa được cấp quyền. Mẹ vẫn có thể chạm nút bên cạnh để thổi nến nhé.";
+        } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+          micStatus.textContent = "Không tìm thấy mic trên thiết bị. Mẹ hãy chạm nút bên cạnh để thổi nến nhé.";
+        } else {
+          micStatus.textContent = `Không bật được mic (${error.name || "lỗi không xác định"}). Mẹ có thể chạm nút bên cạnh để thổi nến.`;
+        }
+      }
+    }
+
+    const codeLines = [
+      '<span class="code-comment">// Khởi tạo một lời thương gửi về nhà</span>',
+      '<span class="code-keyword">const</span> ngayHomNay = <span class="code-string">"20 tháng 10"</span>;',
+      '<span class="code-keyword">const</span> nguoiNhan = <span class="code-string">"Mẹ"</span>;',
+      '<span class="code-keyword">const</span> loiCamOn = [];',
+      "",
+      '<span class="code-comment">// Ghi lại những điều các con vẫn muốn nói</span>',
+      'loiCamOn.<span class="code-function">push</span>(<span class="code-string">"cảm ơn mẹ đã luôn ở bên các con"</span>);',
+      'loiCamOn.<span class="code-function">push</span>(<span class="code-string">"cảm ơn mẹ vì những bữa cơm ấm áp"</span>);',
+      'loiCamOn.<span class="code-function">push</span>(<span class="code-string">"cảm ơn mẹ đã dịu dàng chở che"</span>);',
+      'loiCamOn.<span class="code-function">push</span>(<span class="code-string">"cảm ơn mẹ vì luôn tin vào các con"</span>);',
+      "",
+      '<span class="code-keyword">function</span> <span class="code-function">guiMotCaiOm</span>(me) {',
+      '  <span class="code-keyword">const</span> dieuCacConMong = {',
+      '    sucKhoe: <span class="code-string">"mỗi ngày đều dồi dào"</span>,',
+      '    binhAn: <span class="code-string">"luôn ở trong tim mẹ"</span>,',
+      '    niemVui: <span class="code-string">"ghé thăm mẹ thật thường xuyên"</span>,',
+      '    yeuThuong: <span class="code-string">"nhiều như mẹ vẫn dành cho con"</span>',
+      '  };',
+      "",
+      '  <span class="code-keyword">return</span> {',
+      '    guiDen: me,',
+      '    vaoNgay: ngayHomNay,',
+      '    loiCamOn: loiCamOn,',
+      '    loiChuc: dieuCacConMong',
+      '  };',
+      '}',
+      "",
+      '<span class="code-comment">// Mong mẹ luôn có thật nhiều ngày bình yên</span>',
+      '<span class="code-keyword">const</span> meCuoiThatTuoi = <span class="code-keyword">true</span>;',
+      '<span class="code-keyword">if</span> (meCuoiThatTuoi) {',
+      '  loiCamOn.<span class="code-function">push</span>(<span class="code-string">"nhà mình lại ngập tràn tiếng cười"</span>);',
+      '}',
+      "",
+      '<span class="code-comment">// Những điều tốt đẹp nhất trong cac con đều bắt đầu từ mẹ</span>',
+      '<span class="code-keyword">const</span> nha = <span class="code-string">"nơi có mẹ"</span>;',
+      '<span class="code-keyword">const</span> dieuConNho = <span class="code-string">"chúng con thương mẹ nhiều lắm"</span>;',
+      '<span class="code-function">console</span>.<span class="code-function">log</span>(dieuConNho);',
+      "",
+      '<span class="code-comment">// Gửi mẹ một cái ôm thật lâu ♡</span>',
+      '<span class="code-keyword">const</span> caiOm = <span class="code-function">guiMotCaiOm</span>(nguoiNhan);',
+      '<span class="code-function">console</span>.<span class="code-function">log</span>(caiOm);',
+      '<span class="code-comment">// Chúc mẹ ngày 20 tháng 10 thật vui ✿</span>',
+      '<span class="code-comment">// Kết thúc bằng tất cả yêu thương của các con</span>'
+    ];
+
+    function appendCodeLine(line, number) {
+      const row = document.createElement("div");
+      row.className = "code-line";
+      const lineNumber = document.createElement("span");
+      lineNumber.className = "line-number";
+      lineNumber.textContent = String(number).padStart(2, "0");
+      const code = document.createElement("span");
+      code.innerHTML = line;
+      row.append(lineNumber, code);
+      editorBody.append(row);
+      return code;
+    }
+
+    async function playCodeAnimation() {
+      for (let index = 0; index < codeLines.length; index += 1) {
+        editorBody.lastElementChild?.querySelector(".code-cursor")?.remove();
+        const codeElement = appendCodeLine(codeLines[index], index + 1);
+        const cursor = document.createElement("span");
+        cursor.className = "code-cursor";
+        codeElement.append(cursor);
+        editorBody.scrollTop = editorBody.scrollHeight;
+        runStatus.innerHTML = `<span class="run-dot"></span><span>Đang viết · dòng ${index + 1}/${codeLines.length}</span>`;
+        await wait(190);
+      }
+
+      editorBody.lastElementChild?.querySelector(".code-cursor")?.remove();
+      runStatus.innerHTML = '<span class="run-dot"></span><span>Hoàn tất · Gửi đến mẹ bằng tất cả yêu thương ♡</span>';
+      await wait(900);
+      showScreen(null);
+      await wait(650);
+      showScreen(wishScreen);
+    }
+
+    openCardButton.addEventListener("click", startCandle);
+    micButton.addEventListener("click", enableMicrophone);
+    blowButton.addEventListener("click", extinguishCandle);
+    window.addEventListener("pagehide", () => {
+      stopMicrophone();
+      backgroundMusic.pause();
+      stopCandleSound();
+    });
+  </script>
+</body>
+</html>

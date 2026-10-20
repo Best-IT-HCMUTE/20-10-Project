@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17231f">
+  <title>Một tấm thiệp dành cho bà — 20 tháng 10</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #17231f;
+      --night-soft: #202e28;
+      --paper: #f5f1e7;
+      --ink: #26372f;
+      --muted: #a8b3aa;
+      --green: #91b8a0;
+      --coral: #e49276;
+      --gold: #f2c77d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 50% 110%, rgba(84, 117, 96, .2), transparent 50%),
+        var(--night);
+      color: var(--paper);
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .screen-inner {
+      width: min(760px, 100%);
+      margin: auto;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 17px;
+      color: var(--green);
+      font-size: .73rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1, h2 {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-weight: 400;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      font-size: clamp(2.7rem, 8vw, 5.8rem);
+      letter-spacing: -.055em;
+      line-height: 1.04;
+    }
+
+    h1 em { color: var(--green); font-weight: 400; }
+
+    .subtitle {
+      max-width: 440px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: .98rem;
+      line-height: 1.8;
+    }
+
+    .primary-button, .secondary-button {
+      min-height: 49px;
+      padding: 0 23px;
+      border: 1px solid var(--green);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+
+    .primary-button {
+      color: var(--night);
+      background: var(--green);
+    }
+
+    .primary-button:hover {
+      border-color: #b6d2be;
+      background: #b6d2be;
+      transform: translateY(-2px);
+    }
+
+    .secondary-button {
+      color: var(--paper);
+      background: transparent;
+    }
+
+    .secondary-button:hover {
+      border-color: var(--coral);
+      color: var(--coral);
+      transform: translateY(-2px);
+    }
+
+    button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+
+    /* The unopened greeting card */
+    .cover-inner { max-width: 610px; }
+
+    .cover-card {
+      position: relative;
+      width: min(310px, 76vw);
+      height: 215px;
+      margin: 0 auto 37px;
+      overflow: hidden;
+      border: 1px solid rgba(245, 241, 231, .24);
+      border-radius: 5px;
+      background: linear-gradient(145deg, #536e5c, #344c40 62%, #293a32);
+      box-shadow: 0 28px 85px rgba(0, 0, 0, .32);
+      transform: rotate(-3deg);
+    }
+
+    .cover-card::before {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, transparent 49.7%, rgba(12, 24, 18, .13) 50%);
+      content: "";
+    }
+
+    .cover-card::after {
+      position: absolute;
+      top: -75px;
+      left: 50%;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(245, 241, 231, .18);
+      border-radius: 50%;
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .cover-seal {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 64px;
+      height: 64px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .44);
+      border-radius: 50%;
+      color: #ffe6bd;
+      background: #d9856e;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 1.45rem;
+      transform: translate(-50%, -20%);
+    }
+
+    .cover-date {
+      position: absolute;
+      z-index: 1;
+      top: 27px;
+      right: 0;
+      left: 0;
+      color: #f5e8d0;
+      font-size: .67rem;
+      letter-spacing: .23em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .cover-inner .primary-button { margin-top: 29px; }
+    .small-note { margin: 15px 0 0; color: #84958a; font-size: .78rem; }
+
+    /* Candle and countdown */
+    .candle-inner { width: min(500px, 100%); }
+
+    .candle-scene {
+      position: relative;
+      display: grid;
+      width: min(440px, 100%);
+      height: 310px;
+      margin: 18px auto 15px;
+      place-items: end center;
+    }
+
+    .candle-glow {
+      position: absolute;
+      bottom: 54px;
+      width: 225px;
+      height: 225px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242, 199, 125, .2), rgba(242, 199, 125, 0) 70%);
+      opacity: .7;
+      transition: opacity .5s ease;
+    }
+
+    .candle {
+      position: absolute;
+      bottom: 22px;
+      width: 58px;
+      height: 152px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 8px 8px 5px 5px;
+      background:
+        linear-gradient(90deg, rgba(130, 97, 69, .26), transparent 22%, rgba(255, 255, 255, .16) 50%, transparent 74%),
+        linear-gradient(#f5e5c8, #d6b891);
+      box-shadow: 0 17px 36px rgba(0, 0, 0, .2);
+    }
+
+    .candle::after {
+      position: absolute;
+      top: 0;
+      right: 7px;
+      left: 7px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f8ebd6;
+      content: "";
+    }
+
+    .wick {
+      position: absolute;
+      z-index: 1;
+      bottom: 172px;
+      left: calc(50% - 1px);
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      background: #47372e;
+    }
+
+    .flame {
+      position: absolute;
+      z-index: 2;
+      bottom: 184px;
+      left: 50%;
+      width: 25px;
+      height: 43px;
+      border-radius: 55% 45% 55% 45%;
+      background: radial-gradient(ellipse at 50% 72%, #fff5bf 0 17%, #ffd46e 35%, #f39251 69%, rgba(229, 119, 77, 0) 74%);
+      filter: drop-shadow(0 0 14px rgba(246, 169, 82, .9));
+      transform: translateX(-50%);
+      transform-origin: 50% 90%;
+      animation: flicker .72s ease-in-out infinite alternate;
+      transition: opacity .25s ease, transform .35s ease;
+    }
+
+    .flame::after {
+      position: absolute;
+      top: 13px;
+      left: 9px;
+      width: 8px;
+      height: 21px;
+      border-radius: 50%;
+      background: #fff9da;
+      content: "";
+    }
+
+    .flame.out {
+      opacity: 0;
+      transform: translate(-50%, 9px) scale(.3);
+      animation: none;
+    }
+
+    .smoke {
+      position: absolute;
+      z-index: 3;
+      bottom: 211px;
+      left: calc(50% - 5px);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(218, 224, 212, .48);
+      filter: blur(3px);
+      opacity: 0;
+      transform: scale(.2);
+    }
+
+    .smoke.rise { animation: smoke-rise 1.2s ease-out forwards; }
+
+    .countdown {
+      position: absolute;
+      top: 50%;
+      left: calc(50% + clamp(85px, 20vw, 120px));
+      color: var(--gold);
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: clamp(4rem, 12vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0;
+      text-shadow: 0 0 32px rgba(242, 199, 125, .35);
+      transform: translate(-50%, -50%) scale(.7);
+    }
+
+    .countdown.show { animation: count-pop .78s ease both; }
+    .candle-copy { min-height: 53px; }
+    .candle-copy h2 { margin: 0 0 7px; font-size: 1.65rem; }
+    .candle-copy p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    .wish-timer {
+      width: min(330px, 90%);
+      margin: 20px auto 0;
+      padding: 14px 18px 16px;
+      border: 1px solid rgba(242, 199, 125, .3);
+      border-radius: 16px;
+      background: rgba(242, 199, 125, .07);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+    }
+
+    .wish-timer-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      color: #aab8ac;
+      font-size: .82rem;
+    }
+
+    .wish-timer-label strong { color: var(--gold); font-size: 1.12rem; font-variant-numeric: tabular-nums; }
+
+    .wish-progress {
+      height: 6px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: rgba(245, 241, 231, .14);
+    }
+
+    .wish-progress span {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .candle-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .candle-actions button { min-height: 44px; padding: 0 18px; font-size: .88rem; }
+    .candle-actions[hidden] { display: none; }
+    .mic-status { min-height: 20px; margin: 13px 0 0; color: #aab8ac; font-size: .78rem; }
+
+    /* A full-screen animated code editor */
+    #screen-code {
+      padding: clamp(14px, 3vw, 30px);
+      background:
+        radial-gradient(ellipse at 50% 0, rgba(84, 117, 96, .15), transparent 50%),
+        #0c1310;
+    }
+
+    .code-inner {
+      display: flex;
+      width: min(1200px, 100%);
+      height: calc(100dvh - clamp(28px, 6vw, 60px));
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .code-intro { flex: 0 0 auto; margin-bottom: 16px; text-align: center; }
+    .code-intro .eyebrow { margin-bottom: 8px; }
+    .code-intro h2 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.65rem); }
+
+    .editor {
+      display: flex;
+      min-height: 280px;
+      flex: 1 1 auto;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #3a4a41;
+      border-radius: 11px;
+      background: #111a16;
+      box-shadow: 0 25px 75px rgba(0, 0, 0, .3);
+      text-align: left;
+    }
+
+    .editor-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 42px;
+      padding: 0 14px;
+      border-bottom: 1px solid #2d3a32;
+      color: #87968c;
+      font-size: .72rem;
+    }
+
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #df816e; }
+    .dot:nth-child(2) { background: #e7bb6d; }
+    .dot:nth-child(3) { background: #8bb58e; }
+    .filename { margin-left: 7px; }
+
+    .editor-body {
+      min-height: 0;
+      flex: 1 1 auto;
+      padding: 19px 16px;
+      overflow: auto;
+      color: #c7d5c8;
+      font: .82rem/1.85 Consolas, "Courier New", monospace;
+      scrollbar-color: #496050 #111a16;
+      text-align: left;
+    }
+
+    .code-line {
+      min-height: 1.85em;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      animation: line-enter .2s ease both;
+    }
+    .line-number { display: inline-block; width: 30px; color: #627168; user-select: none; }
+    .code-keyword { color: #c792ea; }
+    .code-string { color: #d9b87c; }
+    .code-function { color: #83c4b1; }
+    .code-comment { color: #829188; }
+    .code-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 1em;
+      margin-left: 3px;
+      background: var(--green);
+      vertical-align: -.12em;
+      animation: blink .85s steps(2, start) infinite;
+    }
+
+    .run-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 39px;
+      padding: 0 16px;
+      border-top: 1px solid #2d3a32;
+      color: #94a398;
+      font-size: .72rem;
+    }
+
+    .run-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #84c391;
+      box-shadow: 0 0 10px rgba(132, 195, 145, .6);
+    }
+
+    .wish-card {
+      width: min(680px, 100%);
+      margin: auto;
+      padding: clamp(22px, 5vw, 34px);
+      border: 1px solid rgba(190, 214, 191, .22);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(67, 96, 76, .45), rgba(33, 49, 40, .64));
+      text-align: center;
+    }
+
+    .wish-card .eyebrow { margin-bottom: 10px; }
+    .wish-card h2 { margin-bottom: 12px; color: #f4e8d2; font-size: clamp(1.7rem, 5vw, 2.55rem); }
+    .wish-card p { max-width: 570px; margin: 0 auto; color: #d0d8cf; font-family: "Segoe UI", Arial, sans-serif; font-size: 1rem; line-height: 1.8; }
+    .wish-signoff { margin-top: 16px !important; color: #b6d2be !important; font-family: "Segoe UI", sans-serif !important; font-size: .82rem !important; }
+
+    @keyframes flicker {
+      from { transform: translateX(-50%) rotate(-3deg) scale(.97, 1); }
+      to { transform: translateX(-50%) rotate(3deg) scale(1.04, .96); }
+    }
+
+    @keyframes count-pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.65); }
+      25%, 70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
+    }
+
+    @keyframes smoke-rise {
+      0% { opacity: .55; transform: translate(0, 0) scale(.4); }
+      100% { opacity: 0; transform: translate(18px, -56px) scale(2.3); }
+    }
+
+    @keyframes blink { to { visibility: hidden; } }
+    @keyframes line-enter {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .screen { padding: max(16px, env(safe-area-inset-top)) 18px max(16px, env(safe-area-inset-bottom)); }
+      .candle-scene { height: 255px; margin-top: 0; }
+      .countdown {
+        top: 22%;
+        left: 50%;
+        font-size: clamp(5rem, 24vw, 7rem);
+      }
+      .wish-timer { margin-top: 14px; }
+      .candle-copy h2 { font-size: 1.4rem; }
+      .candle-copy p { font-size: .85rem; }
+      .candle-actions { gap: 8px; margin-top: 13px; }
+      .candle-actions button { min-height: 48px; padding: 0 14px; }
+      .code-inner { height: calc(100dvh - 32px); margin: 0 auto; }
+      .editor { min-height: 0; }
+      .editor-body { padding: 14px 11px; font-size: .73rem; }
+      .line-number { width: 24px; }
+      .code-intro { margin-bottom: 15px; }
+      .wish-card { padding: 26px 20px; }
+      .wish-card p { font-size: .96rem; line-height: 1.7; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="background-music" src="Nhac_nen.mp3" preload="auto" loop></audio>
+  <audio id="candle-sound" src="Hieu_nen_chay.mp3" preload="auto" loop></audio>
+
+  <section class="screen active" id="screen-cover" aria-labelledby="cover-title">
+    <div class="screen-inner cover-inner">
+      <div class="cover-card" aria-hidden="true">
+        <span class="cover-date">Một lời nhắn nho nhỏ · 20.10</span>
+        <span class="cover-seal">♡</span>
+      </div>
+      <p class="eyebrow">Từ tui</p>
+      <h1 id="cover-title">Có một tấm thiệp<br><em>dành cho bà</em></h1>
+      <p class="subtitle">Bà dành cho tui một chút thời gian nhé?</p>
+      <button class="primary-button" id="open-card" type="button">Mở thiệp <span aria-hidden="true">↗</span></button>
+      <p class="small-note">Một bất ngờ nho nhỏ đang chờ bà bên trong.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-candle" aria-labelledby="candle-title" aria-hidden="true">
+    <div class="screen-inner candle-inner">
+      <p class="eyebrow">Ước một điều thật đẹp nhé</p>
+      <div class="candle-scene" aria-hidden="true">
+        <div class="candle-glow" id="candle-glow"></div>
+        <div class="candle"></div>
+        <div class="wick"></div>
+        <div class="flame" id="flame"></div>
+        <div class="smoke" id="smoke"></div>
+        <div class="countdown" id="countdown"></div>
+      </div>
+      <div class="candle-copy" aria-live="polite">
+        <h2 id="candle-title">Ước một điều thật đẹp nhé</h2>
+        <p id="candle-instruction">Nhắm mắt và dành một chút bình yên cho điều ước của bà.</p>
+      </div>
+      <div class="wish-timer" id="wish-timer" aria-label="Thời gian ước nguyện còn lại">
+        <div class="wish-timer-label"><span>Thời gian ước nguyện</span><strong><span id="wish-seconds">15</span> giây</strong></div>
+        <div class="wish-progress" aria-hidden="true"><span id="wish-progress"></span></div>
+      </div>
+      <div class="candle-actions" id="candle-actions" hidden>
+        <button class="primary-button" id="mic-button" type="button">Bật mic để thổi</button>
+        <button class="secondary-button" id="blow-button" type="button">Chạm để thổi nến</button>
+      </div>
+      <p class="mic-status" id="mic-status" role="status"></p>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-code" aria-labelledby="code-title" aria-hidden="true">
+    <div class="screen-inner code-inner">
+      <div class="code-intro">
+        <p class="eyebrow">Đang biên dịch một lời chúc</p>
+        <h2 id="code-title">Một chút phép màu dành cho bà...</h2>
+      </div>
+      <div class="editor" aria-label="Màn hình mã đang được viết">
+        <div class="editor-bar" aria-hidden="true">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="filename">loi-chuc-danh-cho-cau.js</span>
+        </div>
+        <div class="editor-body" id="editor-body" aria-live="off"></div>
+        <div class="run-status" id="run-status"><span class="run-dot"></span><span>Đang khởi động...</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-wish" aria-label="Lời chúc dành cho bà" aria-hidden="true">
+    <div class="screen-inner">
+      <div class="wish-card" aria-live="polite">
+        <h2>Chúc bà luôn rạng rỡ ♡</h2>
+        <p>
+          Mong bà lúc nào cũng vui vẻ, xinh đẹp, gặp nhiều điều may mắn và luôn có thật nhiều người yêu thương bà. Tui mong những điều tốt đẹp nhất sẽ đến với bà, những chuyện buồn thì ít lại, còn những niềm vui thì ngày càng nhiều hơn. Nếu có những ngày mệt mỏi hay không vui, tui mong bà vẫn nhớ rằng bà luôn xứng đáng được yêu thương và trân trọng, không cần phải cố gắng trở nên hoàn hảo để làm hài lòng bất kỳ ai hết.
+        </br>
+          À mà chúc bà học tập thật tốt nữa nhaaa. Mong bà ngày càng tự tin hơn với ngành Ngôn ngữ Anh của mình, học từ vựng ngày càng giỏi, speaking ngày càng lưu loát, thi cử môn nào cũng thuận lợi và đạt được những điểm số mà bà mong muốn. Còn môn Python á, tui biết bà đang sợ nó dữ lắm :))) nhưng mà hong sao hết, từ từ rồi cũng hiểu thôi bà. Code sai thì sửa, chạy lỗi thì debug, không hiểu thì học lại, chứ đừng vì mấy dòng code mà nghĩ mình không làm được nha. Python có thể làm bà đau đầu chứ không có quyền làm bà mất tự tin đâu 😤
+        </br>
+          Cảm ơn bà vì đã xuất hiện và trở thành một người mà tui cảm thấy rất vui khi được trò chuyện, chia sẻ những chuyện linh tinh trong cuộc sống. Chúc bà có một ngày 20/10 thật đặc biệt, nhận được nhiều hoa, nhiều quà và nhiều yêu thương nèee. 🌸
+        </br>
+          <i>(Có <b>tham khảo</b> AI:))</i>
+        </p>
+        <p class="wish-signoff">Chúc bà một ngày 20 tháng 10 thật vui vẻ. ✿</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const coverScreen = document.querySelector("#screen-cover");
+    const candleScreen = document.querySelector("#screen-candle");
+    const codeScreen = document.querySelector("#screen-code");
+    const wishScreen = document.querySelector("#screen-wish");
+    const openCardButton = document.querySelector("#open-card");
+    const countdown = document.querySelector("#countdown");
+    const candleTitle = document.querySelector("#candle-title");
+    const candleInstruction = document.querySelector("#candle-instruction");
+    const candleActions = document.querySelector("#candle-actions");
+    const wishTimer = document.querySelector("#wish-timer");
+    const wishSeconds = document.querySelector("#wish-seconds");
+    const wishProgress = document.querySelector("#wish-progress");
+    const flame = document.querySelector("#flame");
+    const smoke = document.querySelector("#smoke");
+    const candleGlow = document.querySelector("#candle-glow");
+    const micButton = document.querySelector("#mic-button");
+    const blowButton = document.querySelector("#blow-button");
+    const micStatus = document.querySelector("#mic-status");
+    const editorBody = document.querySelector("#editor-body");
+    const runStatus = document.querySelector("#run-status");
+    const backgroundMusic = document.querySelector("#background-music");
+    const candleSound = document.querySelector("#candle-sound");
+
+    let candleIsOut = false;
+    let audioStream;
+    let audioContext;
+    let animationFrame;
+
+    function showScreen(screen) {
+      for (const candidate of [coverScreen, candleScreen, codeScreen, wishScreen]) {
+        const isActive = candidate === screen;
+        candidate.classList.toggle("active", isActive);
+        candidate.setAttribute("aria-hidden", String(!isActive));
+      }
+    }
+
+    function wait(milliseconds) {
+      return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+    }
+
+    function playAudio(audio, description) {
+      audio.play().catch((error) => {
+        if (!candleIsOut) {
+          micStatus.textContent = `Không phát được ${description} (${error.name || "lỗi không xác định"}).`;
+        }
+      });
+    }
+
+    function stopCandleSound() {
+      candleSound.pause();
+      candleSound.currentTime = 0;
+    }
+
+    async function startCandle() {
+      showScreen(candleScreen);
+      backgroundMusic.volume = 0.35;
+      candleSound.volume = 0.55;
+      playAudio(backgroundMusic, "nhạc nền");
+      playAudio(candleSound, "tiếng nến cháy");
+      candleTitle.textContent = "Ước một điều thật đẹp nhé";
+      candleInstruction.textContent = "Nhắm mắt và dành một chút bình yên cho điều ước của bà.";
+      wishTimer.hidden = false;
+      candleActions.hidden = true;
+
+      for (let remaining = 15; remaining > 0; remaining -= 1) {
+        wishSeconds.textContent = String(remaining);
+        wishProgress.style.transform = `scaleX(${remaining / 15})`;
+        await wait(1000);
+      }
+
+      wishTimer.hidden = true;
+      candleTitle.textContent = "Sẵn sàng thổi nến chưa?";
+      candleInstruction.textContent = "Đếm ngược bắt đầu nhé...";
+      for (const number of ["3", "2", "1"]) {
+        countdown.textContent = number;
+        countdown.classList.remove("show");
+        void countdown.offsetWidth;
+        countdown.classList.add("show");
+        await wait(850);
+      }
+
+      candleTitle.textContent = "Đến lượt bà rồi!";
+      candleInstruction.textContent = "Thổi vào mic hoặc chạm nút để thổi nến nhé.";
+      candleActions.hidden = false;
+      blowButton.focus();
+    }
+
+    function stopMicrophone() {
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = undefined;
+      }
+      if (audioContext && audioContext.state !== "closed") {
+        void audioContext.close();
+      }
+      audioContext = undefined;
+      if (audioStream) {
+        for (const track of audioStream.getTracks()) track.stop();
+      }
+      audioStream = undefined;
+    }
+
+    function extinguishCandle() {
+      if (candleIsOut || candleActions.hidden) return;
+      candleIsOut = true;
+      stopMicrophone();
+      stopCandleSound();
+      flame.classList.add("out");
+      smoke.classList.remove("rise");
+      void smoke.offsetWidth;
+      smoke.classList.add("rise");
+      candleGlow.style.opacity = "0";
+      candleTitle.textContent = "Điều ước đã bay lên rồi!";
+      candleInstruction.textContent = "Một điều dễ thương nữa đang được chuẩn bị...";
+      candleActions.hidden = true;
+      micStatus.textContent = "";
+      window.setTimeout(() => {
+        showScreen(codeScreen);
+        void playCodeAnimation();
+      }, 1050);
+    }
+
+    async function enableMicrophone() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        micStatus.textContent = "Trình duyệt này không hỗ trợ mic ở trang hiện tại. Bà có thể chạm nút bên cạnh để thổi nến.";
+        return;
+      }
+
+      micButton.disabled = true;
+      micStatus.textContent = "Đang chờ bà cho phép dùng mic...";
+
+      try {
+        audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (candleIsOut) {
+          stopMicrophone();
+          return;
+        }
+
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) {
+          stopMicrophone();
+          micStatus.textContent = "Không thể phân tích âm thanh trên trình duyệt này. Bà hãy chạm nút để thổi nến nhé.";
+          return;
+        }
+
+        audioContext = new AudioContextConstructor();
+        await audioContext.resume();
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 1024;
+        audioContext.createMediaStreamSource(audioStream).connect(analyser);
+        const samples = new Uint8Array(analyser.fftSize);
+        let loudFrames = 0;
+        micStatus.textContent = "Mic đã bật — thổi nhẹ vào mic để tắt nến nhé.";
+
+        const listenForBlow = () => {
+          if (candleIsOut || !audioContext || audioContext.state === "closed") return;
+          analyser.getByteTimeDomainData(samples);
+          let sum = 0;
+          for (const sample of samples) {
+            const amplitude = (sample - 128) / 128;
+            sum += amplitude * amplitude;
+          }
+          const volume = Math.sqrt(sum / samples.length);
+          loudFrames = volume > 0.085 ? loudFrames + 1 : Math.max(0, loudFrames - 1);
+
+          if (loudFrames >= 7) {
+            extinguishCandle();
+            return;
+          }
+          animationFrame = window.requestAnimationFrame(listenForBlow);
+        };
+
+        animationFrame = window.requestAnimationFrame(listenForBlow);
+      } catch (error) {
+        stopMicrophone();
+        micButton.disabled = false;
+        if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+          micStatus.textContent = "Mic chưa được cấp quyền. Bà vẫn có thể chạm nút bên cạnh để thổi nến nhé.";
+        } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+          micStatus.textContent = "Không tìm thấy mic trên thiết bị. Bà hãy chạm nút bên cạnh để thổi nến nhé.";
+        } else {
+          micStatus.textContent = `Không bật được mic (${error.name || "lỗi không xác định"}). Bà có thể chạm nút bên cạnh để thổi nến.`;
+        }
+      }
+    }
+
+    const codeLines = [
+      '<span class="code-comment">// Khởi động chương trình gửi lời chúc</span>',
+      '<span class="code-keyword">const</span> ngayDacBiet = <span class="code-string">"20 tháng 10"</span>;',
+      '<span class="code-keyword">const</span> nguoiNhan = <span class="code-string">"..."</span>;',
+      '<span class="code-keyword">const</span> loiChuc = [];',
+      "",
+      '<span class="code-comment">// Nạp những điều dễ thương vào hôm nay</span>',
+      'loiChuc.<span class="code-function">push</span>(<span class="code-string">"thật nhiều niềm vui"</span>);',
+      'loiChuc.<span class="code-function">push</span>(<span class="code-string">"những cuộc trò chuyện vui vẻ"</span>);',
+      'loiChuc.<span class="code-function">push</span>(<span class="code-string">"một ngày đầy nắng đẹp"</span>);',
+      'loiChuc.<span class="code-function">push</span>(<span class="code-string">"thêm nhiều lý do để mỉm cười"</span>);',
+      "",
+      '<span class="code-keyword">function</span> <span class="code-function">guiLoiChuc</span>(nguoiBanMen) {',
+      '  <span class="code-keyword">const</span> dieuUoc = {',
+      '    niemVui: <span class="code-string">"luôn đầy ắp"</span>,',
+      '    binhYen: <span class="code-string">"ở bên mỗi ngày"</span>,',
+      '    nangLuong: <span class="code-string">"được nạp đầy"</span>',
+      '  };',
+      "",
+      '  <span class="code-keyword">return</span> {',
+      '    guiDen: nguoiBanMen,',
+      '    nhanDip: ngayDacBiet,',
+      '    loiChuc: loiChuc,',
+      '    dieuUoc: dieuUoc',
+      '  };',
+      '}',
+      "",
+      '<span class="code-comment">// Kiểm tra xem hôm nay đã có nụ cười chưa</span>',
+      '<span class="code-keyword">const</span> homNayThatVui = <span class="code-keyword">true</span>;',
+      '<span class="code-keyword">if</span> (homNayThatVui) {',
+      '  loiChuc.<span class="code-function">push</span>(<span class="code-string">"bà xứng đáng với mọi điều tốt đẹp"</span>);',
+      '}',
+      "",
+      '<span class="code-comment">// Gửi đến bà, với tất cả sự quý mến</span>',
+      '<span class="code-keyword">const</span> thiep = <span class="code-function">guiLoiChuc</span>(nguoiNhan);',
+      '<span class="code-function">console</span>.<span class="code-function">log</span>(thiep);',
+      "",
+      '<span class="code-comment">// Tặng bà một ngày 20 tháng 10 thật xinh</span>',
+      '<span class="code-keyword">const</span> loiNhan = <span class="code-string">"Chúc bà luôn rạng rỡ ♡"</span>;',
+      '<span class="code-function">guiLoiChuc</span>(nguoiNhan);',
+      '<span class="code-comment">// Hoàn tất bằng một nụ cười ✿</span>'
+    ];
+
+    function appendCodeLine(line, number) {
+      const row = document.createElement("div");
+      row.className = "code-line";
+      const lineNumber = document.createElement("span");
+      lineNumber.className = "line-number";
+      lineNumber.textContent = String(number).padStart(2, "0");
+      const code = document.createElement("span");
+      code.innerHTML = line;
+      row.append(lineNumber, code);
+      editorBody.append(row);
+      return code;
+    }
+
+    async function playCodeAnimation() {
+      for (let index = 0; index < codeLines.length; index += 1) {
+        editorBody.lastElementChild?.querySelector(".code-cursor")?.remove();
+        const codeElement = appendCodeLine(codeLines[index], index + 1);
+        const cursor = document.createElement("span");
+        cursor.className = "code-cursor";
+        codeElement.append(cursor);
+        editorBody.scrollTop = editorBody.scrollHeight;
+        runStatus.innerHTML = `<span class="run-dot"></span><span>Đang biên dịch · dòng ${index + 1}/${codeLines.length}</span>`;
+        await wait(190);
+      }
+
+      editorBody.lastElementChild?.querySelector(".code-cursor")?.remove();
+      runStatus.innerHTML = '<span class="run-dot"></span><span>Hoàn tất · Lời chúc đã được gửi ♡</span>';
+      await wait(900);
+      showScreen(null);
+      await wait(650);
+      showScreen(wishScreen);
+    }
+
+    openCardButton.addEventListener("click", startCandle);
+    micButton.addEventListener("click", enableMicrophone);
+    blowButton.addEventListener("click", extinguishCandle);
+    window.addEventListener("pagehide", () => {
+      stopMicrophone();
+      backgroundMusic.pause();
+      stopCandleSound();
+    });
+  </script>
+</body>
+</html>
